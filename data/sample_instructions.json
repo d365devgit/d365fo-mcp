@@ -1,0 +1,66 @@
+[
+  {
+    "entity_name": "LedgerJournalHeaders",
+    "operation_type": "create",
+    "title": "Create General Journal Header",
+    "description": "Creates a new general journal header for manual journal entries. Use this pattern for monthly accruals, adjustments, and corrections.",
+    "example_data": "{\"JournalName\": \"GenJrn\", \"Description\": \"Monthly accruals - {{month}} {{year}}\", \"dataAreaId\": \"usmf\"}",
+    "tags": ["general-ledger", "journals", "monthly-process", "accruals"]
+  },
+  {
+    "entity_name": "LedgerJournalLines",
+    "operation_type": "create", 
+    "title": "Create General Journal Line",
+    "description": "Creates journal lines with proper account structure and balancing. Always ensure debits equal credits within the journal.",
+    "example_data": "{\"JournalBatchNumber\": \"{{batch_number}}\", \"AccountType\": \"Ledger\", \"AccountDisplayValue\": \"110110-001-022-\", \"DebitAmount\": 1000.00, \"TransDate\": \"2024-01-31\", \"CurrencyCode\": \"USD\", \"dataAreaId\": \"usmf\"}",
+    "tags": ["general-ledger", "journal-lines", "accounting", "balancing"]
+  },
+  {
+    "entity_name": "CustomersV3",
+    "operation_type": "read",
+    "title": "Find Customer by Group",
+    "description": "Efficiently search for customers within a specific customer group. Useful for reporting and bulk operations.",
+    "example_query": "?$filter=CustomerGroupId eq 'RETAIL' and dataAreaId eq 'usmf'&$top=50&$select=CustomerAccount,Name,CustomerGroupId,PrimaryContactEmail",
+    "tags": ["customers", "retail", "search", "filtering"]
+  },
+  {
+    "entity_name": "CustomersV3", 
+    "operation_type": "create",
+    "title": "Create Retail Customer",
+    "description": "Creates a new retail customer with standard settings. Includes proper group assignment and contact information setup.",
+    "example_data": "{\"Name\": \"{{customer_name}}\", \"CustomerGroupId\": \"RETAIL\", \"PrimaryContactEmail\": \"{{email}}\", \"dataAreaId\": \"usmf\"}",
+    "tags": ["customers", "retail", "new-customer", "onboarding"]
+  },
+  {
+    "entity_name": "VendInvoiceJour",
+    "operation_type": "read",
+    "title": "Find Pending Vendor Invoices", 
+    "description": "Query for vendor invoices that are pending approval or processing. Essential for accounts payable workflow management.",
+    "example_query": "?$filter=InvoiceStatus eq 'PendingApproval' and dataAreaId eq 'usmf'&$top=100&$orderby=InvoiceDate desc",
+    "tags": ["vendor-invoices", "accounts-payable", "pending", "workflow"]
+  },
+  {
+    "entity_name": "MainAccounts",
+    "operation_type": "read",
+    "title": "Get Revenue Accounts",
+    "description": "Retrieve all revenue accounts for financial reporting and journal entry validation. Filters by account category.",
+    "example_query": "?$filter=MainAccountCategory eq 'Revenue' and Active eq true&$select=MainAccountId,Name,MainAccountCategory&$orderby=MainAccountId",
+    "tags": ["chart-of-accounts", "revenue", "financial-reporting", "active-accounts"]
+  },
+  {
+    "entity_name": "CustInvoiceJour",
+    "operation_type": "read", 
+    "title": "Customer Invoice History",
+    "description": "Retrieve customer invoice history for analysis and customer service. Includes date filtering for performance.",
+    "example_query": "?$filter=InvoiceDate ge {{start_date}} and InvoiceDate le {{end_date}} and dataAreaId eq 'usmf'&$top=200&$orderby=InvoiceDate desc",
+    "tags": ["customer-invoices", "accounts-receivable", "history", "date-filtering"]
+  },
+  {
+    "entity_name": "InventTable",
+    "operation_type": "read",
+    "title": "Active Product Search",
+    "description": "Search for active products by name or item number. Useful for sales order entry and inventory management.",
+    "example_query": "?$filter=contains(ItemName, '{{search_term}}') and ItemStatus eq 'Active'&$select=ItemId,ItemName,ItemGroupId,UnitPrice&$top=50",
+    "tags": ["inventory", "products", "search", "active-items", "sales"]
+  }
+]
