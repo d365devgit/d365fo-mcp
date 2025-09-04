@@ -8,7 +8,7 @@ from typing import Dict, Any
 
 # Migration for enhanced metadata storage schema
 METADATA_STORAGE_MIGRATION = {
-    "version": 3,
+    "version": 4,
     "description": "Optimized metadata storage schema",
     "sql": """
         -- Raw metadata cache table (for backward compatibility)
@@ -97,6 +97,109 @@ SQLITE_MIGRATIONS = [
     },
     {
         "version": 2,
+        "description": "Add normalized metadata tables for bulk operations",
+        "sql": """
+            -- Entity Types Table
+            CREATE TABLE IF NOT EXISTS entity_types (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                base_type TEXT,
+                abstract BOOLEAN DEFAULT FALSE,
+                has_key BOOLEAN DEFAULT FALSE,
+                namespace TEXT,
+                annotations TEXT  -- JSON
+            );
+            
+            -- Entity Sets Table
+            CREATE TABLE IF NOT EXISTS entity_sets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                entity_type_id INTEGER NOT NULL,
+                annotations TEXT,  -- JSON
+                FOREIGN KEY (entity_type_id) REFERENCES entity_types(id)
+            );
+            
+            -- Entity Properties Table
+            CREATE TABLE IF NOT EXISTS entity_properties (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                entity_type_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                type TEXT NOT NULL,
+                nullable BOOLEAN DEFAULT TRUE,
+                max_length INTEGER,
+                precision INTEGER,
+                scale INTEGER,
+                is_key BOOLEAN DEFAULT FALSE,
+                annotations TEXT,  -- JSON
+                FOREIGN KEY (entity_type_id) REFERENCES entity_types(id)
+            );
+            
+            -- Navigation Properties Table
+            CREATE TABLE IF NOT EXISTS navigation_properties (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                entity_type_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                target_entity_type TEXT,
+                relationship_type TEXT,
+                is_collection BOOLEAN DEFAULT FALSE,
+                nullable BOOLEAN DEFAULT TRUE,
+                annotations TEXT,  -- JSON
+                FOREIGN KEY (entity_type_id) REFERENCES entity_types(id)
+            );
+            
+            -- Enum Types Table
+            CREATE TABLE IF NOT EXISTS enum_types (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                underlying_type TEXT,
+                is_flags BOOLEAN DEFAULT FALSE,
+                namespace TEXT,
+                annotations TEXT  -- JSON
+            );
+            
+            -- Enum Members Table
+            CREATE TABLE IF NOT EXISTS enum_members (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                enum_type_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                value TEXT NOT NULL,
+                annotations TEXT,  -- JSON
+                ordinal_position INTEGER,
+                FOREIGN KEY (enum_type_id) REFERENCES enum_types(id)
+            );
+            
+            -- Entity Search Table for full-text search
+            CREATE TABLE IF NOT EXISTS entity_search (
+                name TEXT PRIMARY KEY,
+                type TEXT NOT NULL,
+                description TEXT
+            );
+            
+            -- Metadata Sync Tracking Table
+            CREATE TABLE IF NOT EXISTS metadata_sync (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                last_sync_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                last_sync_duration_ms INTEGER,
+                xml_size_bytes INTEGER,
+                entity_types_parsed INTEGER DEFAULT 0,
+                enum_types_parsed INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'pending'
+            );
+            
+            -- Indexes for performance
+            CREATE INDEX IF NOT EXISTS idx_entity_types_name ON entity_types(name);
+            CREATE INDEX IF NOT EXISTS idx_entity_sets_name ON entity_sets(name);
+            CREATE INDEX IF NOT EXISTS idx_entity_sets_type ON entity_sets(entity_type_id);
+            CREATE INDEX IF NOT EXISTS idx_entity_properties_entity ON entity_properties(entity_type_id);
+            CREATE INDEX IF NOT EXISTS idx_entity_properties_name ON entity_properties(entity_type_id, name);
+            CREATE INDEX IF NOT EXISTS idx_navigation_properties_entity ON navigation_properties(entity_type_id);
+            CREATE INDEX IF NOT EXISTS idx_enum_types_name ON enum_types(name);
+            CREATE INDEX IF NOT EXISTS idx_enum_members_enum ON enum_members(enum_type_id);
+            CREATE INDEX IF NOT EXISTS idx_entity_search_name ON entity_search(name);
+        """,
+    },
+    {
+        "version": 3,
         "description": "Add unique constraint for entity+operation instructions",
         "sql": """
             -- Remove existing index
