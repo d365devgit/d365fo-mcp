@@ -33,7 +33,7 @@ class D365AuthManager(IAuthProvider):
             "D365 Auth Manager initialized",
             tenant_id=self.settings.azure_tenant_id,
             client_id=self.settings.azure_client_id,
-            d365_instance=self.settings.d365_instance,
+            d365_base_url=self.settings.d365_base_url,
         )
 
     async def get_d365_token(self, user_context: Dict[str, str]) -> str:

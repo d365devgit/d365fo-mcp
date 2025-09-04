@@ -107,7 +107,7 @@ class ServerValidator:
             # Load and validate settings
             settings = get_settings()
             print(f"✅ Configuration loaded")
-            print(f"   - D365 Instance: {settings.d365_instance}")
+            print(f"   - D365 Base URL: {settings.d365_base_url}")
             print(f"   - Default Company: {settings.dataareaid}")
             print(f"   - Database Path: {settings.database_path_resolved}")
             print(f"   - Auth Provider: {settings.auth_provider}")

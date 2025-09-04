@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     azure_client_id: str
     azure_client_secret: str
     azure_tenant_id: str
-    d365_instance: str
+    d365_base_url: str
 
     # Optional Configuration
     dataareaid: str = "usmf"
@@ -51,7 +51,7 @@ class Settings(BaseSettings):
     @property
     def d365_resource_url(self) -> str:
         """Get D365 resource URL"""
-        return f"https://{self.d365_instance}.operations.dynamics.com"
+        return self.d365_base_url.rstrip('/')
 
 
 # Global settings instance
@@ -70,7 +70,7 @@ def get_settings() -> Settings:
         logger = structlog.get_logger(__name__)
         logger.info("Environment variables", 
                    database_path=os.getenv('DATABASE_PATH'),
-                   d365_instance=os.getenv('D365_INSTANCE'),
+                   d365_base_url=os.getenv('D365_BASE_URL'),
                    cwd=os.getcwd())
         
         try:

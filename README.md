@@ -48,7 +48,7 @@ Create a `.env` file with your D365 credentials:
 AZURE_CLIENT_ID=<service-principal-client-id>
 AZURE_CLIENT_SECRET=<service-principal-secret>
 AZURE_TENANT_ID=<azure-tenant-id>
-D365_INSTANCE=<d365-instance-name>
+D365_BASE_URL=<d365-full-url>
 
 # Optional Configuration
 DATAAREAID=usmf                      # Default company ID
@@ -75,7 +75,7 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Code/Us
         "AZURE_CLIENT_ID": "your-client-id",
         "AZURE_CLIENT_SECRET": "your-client-secret", 
         "AZURE_TENANT_ID": "your-tenant-id",
-        "D365_INSTANCE": "your-instance.sandbox",
+        "D365_BASE_URL": "https://your-env.sandbox.operations.dynamics.com",
         "DATAAREAID": "usmf",
         "DATABASE_PATH": "/absolute/path/to/d365fo-mcp/data/d365fo-mcp.db"
       }

@@ -42,7 +42,7 @@ def mock_settings():
         azure_client_id="test-client-id",
         azure_client_secret="test-client-secret",
         azure_tenant_id="test-tenant-id",
-        d365_instance="test-instance",
+        d365_base_url="https://test-instance.operations.dynamics.com",
         dataareaid="test",
         database_path=":memory:",
     )

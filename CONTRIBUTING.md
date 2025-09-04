@@ -76,7 +76,7 @@ Create a `.env` file with your development settings:
 AZURE_CLIENT_ID=your-dev-client-id
 AZURE_CLIENT_SECRET=your-dev-secret
 AZURE_TENANT_ID=your-tenant-id
-D365_INSTANCE=your-sandbox-instance
+D365_BASE_URL=https://your-env.sandbox.operations.dynamics.com
 
 # Development Settings
 DATAAREAID=usmf
