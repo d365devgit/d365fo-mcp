@@ -570,7 +570,7 @@ class BulkMetadataParser:
             ))
         
         self.db.executemany("""
-            INSERT INTO entity_search (name, type, description)
+            INSERT OR REPLACE INTO entity_search (name, type, description)
             VALUES (?, ?, ?)
         """, entity_search_batch)
     

@@ -63,15 +63,23 @@ class ServerFactory:
             instructions_repository = RepositoryFactory.create_instructions_repository(settings)
             
             # 4. Create services using factory (inject repository dependencies)
-            metadata_service = ServiceFactory.create_metadata_service(metadata_repository, d365_client)
+            # Enable background sync for SQLite repositories to automatically sync metadata
+            enable_background_sync = settings.metadata_repository.lower() == "sqlite"
+            database = getattr(metadata_repository, 'database', None) if enable_background_sync else None
+            
+            metadata_service = ServiceFactory.create_metadata_service(
+                metadata_repository, 
+                d365_client, 
+                enable_background_sync=enable_background_sync,
+                database=database
+            )
             instructions_service = ServiceFactory.create_instructions_service(instructions_repository)
             
             # 5. Initialize all services
             await metadata_service.initialize()
             await instructions_service.initialize()
             
-            # 6. Optional: Start background sync if using SQLite (future enhancement)
-            # TODO: Move background sync to service layer
+            # 6. Background sync is now automatically enabled for SQLite repositories
             
             # 7. Register base tools using registry (inject service dependencies)
             ToolRegistry.register_all_tools(mcp, metadata_service, d365_client, instructions_service)

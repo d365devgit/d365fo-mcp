@@ -130,7 +130,10 @@ SQLITE_MIGRATIONS = [
                 precision INTEGER,
                 scale INTEGER,
                 is_key BOOLEAN DEFAULT FALSE,
+                is_enum BOOLEAN DEFAULT FALSE,
+                enum_type TEXT,
                 annotations TEXT,  -- JSON
+                ordinal_position INTEGER,
                 FOREIGN KEY (entity_type_id) REFERENCES entity_types(id)
             );
             
@@ -168,7 +171,7 @@ SQLITE_MIGRATIONS = [
                 FOREIGN KEY (enum_type_id) REFERENCES enum_types(id)
             );
             
-            -- Entity Search Table for full-text search
+            -- Entity Search Table for full-text search  
             CREATE TABLE IF NOT EXISTS entity_search (
                 name TEXT PRIMARY KEY,
                 type TEXT NOT NULL,
@@ -183,7 +186,12 @@ SQLITE_MIGRATIONS = [
                 xml_size_bytes INTEGER,
                 entity_types_parsed INTEGER DEFAULT 0,
                 enum_types_parsed INTEGER DEFAULT 0,
-                status TEXT DEFAULT 'pending'
+                entity_count INTEGER DEFAULT 0,
+                enum_count INTEGER DEFAULT 0,
+                sync_status TEXT DEFAULT 'pending',
+                status TEXT DEFAULT 'pending',
+                error_message TEXT,
+                d365_instance TEXT
             );
             
             -- Indexes for performance

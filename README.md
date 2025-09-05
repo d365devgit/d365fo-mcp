@@ -37,6 +37,28 @@ python -m d365fo_mcp.main
 # Or install in Claude Desktop - see Configuration section
 ```
 
+## Manual Metadata Sync
+
+The server automatically syncs D365 metadata in the background, but you can also manually populate the metadata cache if needed:
+
+```bash
+# Run manual metadata sync (one-time setup or refresh)
+python scripts/manual_sync.py
+```
+
+This script will:
+- Connect to your D365 environment using credentials from `.env`
+- Download complete metadata (typically 40-50MB)
+- Process 4,000+ entities and their properties
+- Populate the local SQLite database for fast searches
+- Complete in 15-30 seconds depending on your connection
+
+**When to use manual sync:**
+- Initial setup to verify credentials and connectivity
+- If background sync isn't working properly
+- To refresh metadata after major D365 customizations
+- For troubleshooting connectivity issues
+
 ## Configuration
 
 ### Environment Variables
