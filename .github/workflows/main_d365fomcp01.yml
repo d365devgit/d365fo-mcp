@@ -27,10 +27,12 @@ jobs:
       - name: Create and start virtual environment
         run: |
           python -m venv venv
-          source venv/bin/activate
+          source venv/bin/activate      
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: 
+          pip freeze > requirements.txt 
+          pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -60,4 +62,5 @@ jobs:
           slot-name: 'Production'
 
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_16A4237E460B4931AFFFF05AE9177B43 }}
+
 
